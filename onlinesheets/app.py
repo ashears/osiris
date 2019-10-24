@@ -3,22 +3,17 @@ from typing import List
 from pydantic import BaseModel
 
 
-class OnlineSheets:
+class OnlineSheets(FastAPI):
     def __init__(self,
+                 database_path: str,
                  tables: List[BaseModel]):
-        self.app = FastAPI()
-        # self.db
+        self.database_path = database_path
 
-        self.__process_tables(tables)
-
-    def __process_tables(self, tables: List[BaseModel]):
         for table_model in tables:
-            # Check whether required content is in the database
-            # sqliteauditor.audit_database(db, tables=tables, validate_headers=True)
-
+            # Audit the sqlitedb
             self.create_router(table_model)
 
-    def create_router(self, table_model):
+    def create_router(self, table_model: BaseModel):
         table_name = table_model.__name__
         fields = table_model.__dict__.get('__fields').keys()
         router = APIRouter()
@@ -37,6 +32,4 @@ class OnlineSheets:
 
         # TODO: Try to find a way to make a dynamic query args get
 
-        self.app.include_router(router, prefix=table_name)
-
-    pass
+        self.include_router(router, prefix=table_name, tags=[table_name])
