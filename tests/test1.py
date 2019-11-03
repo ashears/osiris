@@ -16,7 +16,7 @@ class Cats(BaseModel):
     cat_age: int
 
 
-app = OnlineSheets(database_path="database.db", tables=[Cats, Dogs])
+app = OnlineSheets(tables=[Cats, Dogs])
 
 if __name__ == '__main__':
     pass
